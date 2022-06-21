@@ -1,83 +1,70 @@
-import React, {useState, useEffect} from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Form from './components/Form';
-import ItemList from './components/ItemList';
-import {connect} from 'react-redux';
+import React, {useState} from 'react';
+import Form from './component/Form';
+import ItemList from './component/ItemList';
+import {v4 as uuidv4} from 'uuid';
 
-function App(props) {
+function App(){
 
-  const [articles, setArticles] = useState([]);
-  const [id, setId] = useState(1)
+  const [articles, setArticles] = useState([])
 
-  // const addArticle = (article)=>{
-  //   setArticles([...articles, article]);
-  //   setId(id + 1)
-  // }
+  const addArticle = (article) => {
 
-  // const addArticle = (article) => {
-  //   // props.dispatch({type: 'ADD_ARTICLE', payload: article});
-  //   props.addArticle(article);
-  // }
+    article.id = uuidv4();
+    const newArticles = [...articles, article]
+    setArticles(newArticles);
 
-  console.log(articles)
-  return (
-    <div className="container">
-      <h3>Liste de courses</h3>
-      <Form formTitle="Ajouter un article" addArticle={props.addArticle}/>
-      <ItemList articles={props.articles} editArticle= {props.editArticle} id={id}/>
-    </div>
-  );
-}
-
-const addArticleActionCreator = (article) => {
-  return {
-    type: 'ADD_ARTICLE',
-    payload: article
   }
-}
 
-const editArticleActionCreator = (article) => {
-  return {
-    type: 'EDIT_ARTICLE',
-    payload: article
-  }
-}
+  const deleteArticle = (id_article) => {
 
-const mapStateToProps = (state) => { // On appelle cette fonction comme on veux
-  return {
-    articles:  state.articles
-  }
-}
-
-const mapDispatchToProps = (dispatch) => { // On appelle cette fonction comme on veux
-  return {
-    addArticle: (article) => { // On passe la fonction addArticle sous forme de props
-      dispatch(addArticleActionCreator(article))
-    },
-    editArticle: (article) => { 
-      dispatch(editArticleActionCreator(article))
-    }
-  }
-}
-
-// export default connect(mapStateToProps, mapDispatchToProps)(App);
-
-export default connect(
-      (state) => { // On donne au reducer le state de départ
-        return {
-          articles:  state.articles
-        }
-      }, 
-      (dispatch) => { // On donne acces à l'élément enfant à au code d'action situé dans le reducer (Dans Article.js, la metode editArticle qu'on utilise permet d'éxécuter le code situé dans le case 'EDIT_ARTICLE' du reducer)
-        return {
-          addArticle: (article) => { // On passe la fonction addArticle sous forme de props
-            dispatch(addArticleActionCreator(article))
-          },
-          editArticle: (article) => { 
-            dispatch(editArticleActionCreator(article))
-          }
-        }
+    let newArticles = [];
+    articles.map((article) => {
+      
+      if(article.id !== id_article){
+        newArticles.push(article);
       }
-    )
-    (App);
+    })
+
+    setArticles(newArticles);
+
+  }
+
+  const setQuantity = (newQuantity, id_article) => {
+
+     let newArticles = articles.map((article) => {
+      
+      if(article.id === id_article){
+        article.quantity = newQuantity;
+      }
+      return article;
+    })
+    
+    setArticles(newArticles);
+
+  }
+
+  const setName = (newName,id_article) => {
+
+    let newArticles = articles.map((article) => {
+      
+      if(article.id === id_article){
+        article.name = newName;
+      }
+      return article;
+    })
+    
+    setArticles(newArticles);
+
+  }
+
+return (
+  <div className="container">
+    <h3>Liste de courses</h3>
+    <Form formTitle="Ajouter un article" addArticle={addArticle}/>
+    <ItemList articles={articles} deleteArticle={deleteArticle} setQuantity={setQuantity} setName={setName} />
+  </div>
+)
+
+}
+
+export default App;
