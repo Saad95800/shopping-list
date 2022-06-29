@@ -15,8 +15,8 @@ function Form({formTitle, addArticle}){
         e.preventDefault();
         if(name != "" && quantity > 0){
             let article = {}
-            article.name = name;
-            article.quantity = quantity;
+            article.nom_produit = name;
+            article.quantite_produit = quantity;
             addArticle(article)
             setName('');
             setQuantity(0)
